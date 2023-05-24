@@ -5,3 +5,7 @@ This a demonstration of using the [targets](https://github.com/ropensci/targets)
 ## Running the workflow
 
 Run `targets::tar_make()` in R.
+
+## License
+
+[MIT](LICENSE)
