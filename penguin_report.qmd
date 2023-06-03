@@ -10,24 +10,24 @@ execute:
 ```{r}
 #| label: load
 #| message: false
-targets::tar_load(penguin_models_augmented)
-targets::tar_load(penguin_models_summary)
+targets::tar_load(model_predictions)
+targets::tar_load(model_summaries)
 
 library(tidyverse)
 ```
 
-This is an example analysis of penguins on the Palmer Archipelago in Antarctica.
+The goal of this analysis is to determine how bill length and depth are related in three species of penguins from Antarctica.
 
 ## Models
 
-We analyzed the relationship between bill length and depth using linear models. One model did not take into account species, while the other did.
+We analyzed the relationship between bill length and depth using linear models. One model did not take into account species (single slope and intercept), one model added a parameter for species (same slope, different intercepts), and another model added both a parameter for species and the interaction between species and bill length (different slopes, different intercepts).
 
 ## Results
 
 ```{r}
 #| label: results-stats
 mod_stats <-
-  penguin_models_summary %>%
+  model_summaries %>%
     mutate(across(c(r.squared, adj.r.squared), ~round(.x, 3))) %>%
     split(.$model)
 ```
@@ -48,7 +48,7 @@ The penguins data is an example of "Simpson's Paradox," whereby aggregation of d
 #| label: fig-combined-plot
 #| fig-cap: "Combined model"
 ggplot(
-  filter(penguin_models_augmented, model == "combined"),
+  filter(model_predictions, model == "combined"),
   aes(x = bill_length_mm)
 ) +
   geom_point(aes(y = bill_depth_mm)) +
@@ -63,7 +63,7 @@ ggplot(
 #| label: fig-separate-plot
 #| fig-cap: "Separate model"
 ggplot(
-  filter(penguin_models_augmented, model == "separate"),
+  filter(model_predictions, model == "separate"),
   aes(x = bill_length_mm, color = species)
 ) +
   geom_point(aes(y = bill_depth_mm)) +

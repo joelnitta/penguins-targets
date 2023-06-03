@@ -2,28 +2,36 @@ source("R/packages.R")
 source("R/functions.R")
 
 tar_plan(
+  # Load raw data
   tar_file_read(
-    penguin_data_raw,
+    penguins_data_raw,
     path_to_file("penguins_raw.csv"),
-    read_csv(!!.x)
+    read_csv(!!.x, show_col_types = FALSE)
   ),
-  penguin_data = clean_penguin_data(penguin_data_raw),
-  penguin_models = list(
-    combined = lm(
-      bill_depth_mm ~ bill_length_mm, data = penguin_data),
-    separate = lm(
-      bill_depth_mm ~ bill_length_mm * species, data = penguin_data)
+  # Clean data
+  penguins_data = clean_penguin_data(penguins_data_raw),
+  # Build models
+  models = list(
+    combined_model = lm(
+      bill_depth_mm ~ bill_length_mm, data = penguins_data),
+    species_model = lm(
+      bill_depth_mm ~ bill_length_mm + species, data = penguins_data),
+    interaction_model = lm(
+      bill_depth_mm ~ bill_length_mm * species, data = penguins_data)
   ),
+  # Get model summaries
   tar_target(
-    penguin_models_augmented,
-    augment_penguins(penguin_models),
-    pattern = map(penguin_models)
+    model_summaries,
+    glance_with_mod_name(models),
+    pattern = map(models)
   ),
+  # Predict points based on model
   tar_target(
-    penguin_models_summary,
-    glance_penguins(penguin_models),
-    pattern = map(penguin_models)
+    model_predictions,
+    augment_with_mod_name(models),
+    pattern = map(models)
   ),
+  # Generate report
   tar_quarto(
     penguin_report,
     path = "penguin_report.qmd",

@@ -13,13 +13,13 @@ clean_penguin_data <- function(penguin_data_raw) {
     remove_missing()
 }
 
-augment_penguins <- function(mod_in_list) {
+augment_with_mod_name <- function(mod_in_list) {
   model_name <- names(mod_in_list)
   broom::augment(mod_in_list[[1]]) %>%
     mutate(model = model_name)
 }
 
-glance_penguins <- function(mod_in_list) {
+glance_with_mod_name <- function(mod_in_list) {
   model_name <- names(mod_in_list)
   broom::glance(mod_in_list[[1]]) %>%
     mutate(model = model_name)
