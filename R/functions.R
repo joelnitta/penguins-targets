@@ -27,7 +27,7 @@ clean_penguin_data <- function(penguins_data_raw) {
 augment_with_mod_name <- function(mod_in_list) {
   model_name <- names(mod_in_list)
   broom::augment(mod_in_list[[1]]) %>%
-    mutate(model = model_name)
+    mutate(model_name = model_name)
 }
 
 #' Summarize parameters of a model and include the name of the model in the
@@ -41,5 +41,5 @@ augment_with_mod_name <- function(mod_in_list) {
 glance_with_mod_name <- function(mod_in_list) {
   model_name <- names(mod_in_list)
   broom::glance(mod_in_list[[1]]) %>%
-    mutate(model = model_name)
+    mutate(model_name = model_name)
 }

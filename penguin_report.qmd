@@ -29,7 +29,7 @@ We analyzed the relationship between bill length and depth using linear models. 
 mod_stats <-
   model_summaries %>%
     mutate(across(c(r.squared, adj.r.squared), ~round(.x, 3))) %>%
-    split(.$model)
+    split(.$model_name)
 ```
 
 The model that did not account for species shows a negative relationship between bill length and depth overall (@fig-combined-plot).
@@ -48,7 +48,7 @@ The penguins data is an example of "Simpson's Paradox," whereby aggregation of d
 #| label: fig-combined-plot
 #| fig-cap: "Combined model"
 ggplot(
-  filter(model_predictions, model == "combined_model"),
+  filter(model_predictions, model_name == "combined_model"),
   aes(x = bill_length_mm)
 ) +
   geom_point(aes(y = bill_depth_mm)) +
@@ -63,7 +63,7 @@ ggplot(
 #| label: fig-separate-plot
 #| fig-cap: "Separate model"
 ggplot(
-  filter(model_predictions, model == "interaction_model"),
+  filter(model_predictions, model_name == "interaction_model"),
   aes(x = bill_length_mm, color = species)
 ) +
   geom_point(aes(y = bill_depth_mm)) +
