@@ -2,6 +2,8 @@
 
 This a demonstration of using the [targets](https://github.com/ropensci/targets) R package for maintaining data analysis workflows in R.
 
+Please see the accompanying workshop materials: https://joelnitta.github.io/targets-workshop/
+
 ## Running the workflow locally
 
 Clone this repo, then run `targets::tar_make()` in R.
