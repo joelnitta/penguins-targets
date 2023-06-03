@@ -48,7 +48,7 @@ The penguins data is an example of "Simpson's Paradox," whereby aggregation of d
 #| label: fig-combined-plot
 #| fig-cap: "Combined model"
 ggplot(
-  filter(model_predictions, model == "combined"),
+  filter(model_predictions, model == "combined_model"),
   aes(x = bill_length_mm)
 ) +
   geom_point(aes(y = bill_depth_mm)) +
@@ -63,7 +63,7 @@ ggplot(
 #| label: fig-separate-plot
 #| fig-cap: "Separate model"
 ggplot(
-  filter(model_predictions, model == "separate"),
+  filter(model_predictions, model == "interaction_model"),
   aes(x = bill_length_mm, color = species)
 ) +
   geom_point(aes(y = bill_depth_mm)) +
