@@ -10,8 +10,13 @@ execute:
 ```{r}
 #| label: load
 #| message: false
-targets::tar_load(model_predictions)
-targets::tar_load(model_summaries)
+targets::tar_load(
+  c(combined_summary,
+    species_summary,
+    combined_predictions,
+    species_predictions
+  )
+)
 
 library(tidyverse)
 ```
@@ -20,25 +25,28 @@ The goal of this analysis is to determine how bill length and depth are related 
 
 ## Methods
 
-We analyzed the relationship between bill length and depth using linear models. One model did not take into account species (single slope and intercept; "combined model"), one model added a parameter for species (same slope, different intercepts; "species model"), and another model added both a parameter for species and the interaction between species and bill length (different slopes, different intercepts; "interaction model").
+We analyzed the relationship between bill length and depth using linear models. One model did not take into account species, while the others did.
 
 ## Results
 
 ```{r}
-#| label: results-stats
-mod_stats <-
-  model_summaries %>%
-    mutate(across(c(r.squared, adj.r.squared), ~round(.x, 3))) %>%
-    split(.$model_name)
+combined_r2 <- combined_summary |>
+  pull(r.squared) |>
+  round(2)
+
+species_mean_r2 <- species_summary |>
+  pull(r.squared) |>
+  mean() |>
+  round(2)
 ```
 
 The model that did not account for species ("combined model") shows a negative relationship between bill length and depth overall (@fig-combined-plot).
 
 The models that did account for species show the opposite result: a positive relationship between bill length and depth for each species (@fig-species-plot; @fig-interaction-plot).
 
-Furthermore, the combined model explained less of the variation in the data (adjusted *R* squared `r mod_stats$combined_model$r.squared`) than models accounting for species (adjusted *R* squared `r mod_stats$species_model$r.squared` and `r mod_stats$interaction_model$r.squared`, species model and interaction model, respectively ).
+The models that did account for species shows the opposite result: a positive relationship between bill length and depth for each species (@fig-separate-plot).
 
-In the models accounting for species, the relationship between bill depth and length (the slope) appears very similar for each species (@fig-species-plot; @fig-interaction-plot).
+Furthermore, the combined model explained less of the variation in the data (*R* squared = `r combined_r2`) than the models for each species (mean *R* squared = `r species_mean_r2`).
 
 ## Conclusion
 
@@ -50,7 +58,7 @@ The penguins data is an example of "Simpson's Paradox," whereby aggregation of d
 #| label: fig-combined-plot
 #| fig-cap: "Combined model"
 ggplot(
-  filter(model_predictions, model_name == "combined_model"),
+  combined_predictions,
   aes(x = bill_length_mm)
 ) +
   geom_point(aes(y = bill_depth_mm)) +
@@ -62,26 +70,10 @@ ggplot(
 ```
 
 ```{r}
-#| label: fig-species-plot
-#| fig-cap: "Species model"
+#| label: fig-separate-plot
+#| fig-cap: "Separate models"
 ggplot(
-  filter(model_predictions, model_name == "species_model"),
-  aes(x = bill_length_mm, color = species)
-) +
-  geom_point(aes(y = bill_depth_mm)) +
-  geom_line(aes(y = .fitted)) +
-  labs(
-    y = "Bill length (mm)",
-    x = "Bill depth (mm)"
-  ) +
-  theme(legend.position = "bottom")
-```
-
-```{r}
-#| label: fig-interaction-plot
-#| fig-cap: "Interaction model"
-ggplot(
-  filter(model_predictions, model_name == "interaction_model"),
+  species_predictions,
   aes(x = bill_length_mm, color = species)
 ) +
   geom_point(aes(y = bill_depth_mm)) +
