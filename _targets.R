@@ -1,33 +1,39 @@
-source("R/packages.R")
 source("R/functions.R")
+source("R/packages.R")
 
 tar_plan(
+  # Load raw data
   tar_file_read(
-    penguin_data_raw,
+    penguins_data_raw,
     path_to_file("penguins_raw.csv"),
-    read_csv(!!.x)
+    read_csv(!!.x, show_col_types = FALSE)
   ),
-  penguin_data = clean_penguin_data(penguin_data_raw),
-  penguin_models = list(
-    combined = lm(
-      bill_depth_mm ~ bill_length_mm, data = penguin_data),
-    separate = lm(
-      bill_depth_mm ~ bill_length_mm * species, data = penguin_data)
+  # Clean and group data
+  tar_group_by(
+    penguins_data,
+    clean_penguin_data(penguins_data_raw),
+    species
   ),
+  # Get summary of combined model with all species together
+  combined_summary = model_glance(penguins_data),
+  # Get summary of one model per species
   tar_target(
-    penguin_models_augmented,
-    augment_penguins(penguin_models),
-    pattern = map(penguin_models)
+    species_summary,
+    model_glance(penguins_data),
+    pattern = map(penguins_data)
   ),
+  # Get predictions of combined model with all species together
+  combined_predictions = model_augment(penguins_data),
+  # Get predictions of one model per species
   tar_target(
-    penguin_models_summary,
-    glance_penguins(penguin_models),
-    pattern = map(penguin_models)
+    species_predictions,
+    model_augment(penguins_data),
+    pattern = map(penguins_data)
   ),
+  # Generate report
   tar_quarto(
     penguin_report,
     path = "penguin_report.qmd",
-    quiet = FALSE,
-    packages = c("targets", "tidyverse")
+    quiet = FALSE
   )
 )

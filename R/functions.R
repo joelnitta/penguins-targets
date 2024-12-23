@@ -1,26 +1,45 @@
-clean_penguin_data <- function(penguin_data_raw) {
-  penguin_data_raw %>%
-    janitor::clean_names() %>%
-    transmute(
-      species = as.factor(species),
-      island = as.factor(island),
-      bill_length_mm = culmen_length_mm,
-      bill_depth_mm = culmen_depth_mm,
-      body_mass_g = body_mass_g,
-      sex = as.factor(sex),
-      year = lubridate::year(date_egg)
-    ) %>%
-    remove_missing()
+clean_penguin_data <- function(penguins_data_raw) {
+  penguins_data_raw |>
+    select(
+      species = Species,
+      bill_length_mm = `Culmen Length (mm)`,
+      bill_depth_mm = `Culmen Depth (mm)`
+    ) |>
+    drop_na() |>
+    # Split "species" apart on spaces, and only keep the first word
+    separate(species, into = "species", extra = "drop")
 }
 
-augment_penguins <- function(mod_in_list) {
-  model_name <- names(mod_in_list)
-  broom::augment(mod_in_list[[1]]) %>%
-    mutate(model = model_name)
+model_glance <- function(penguins_data) {
+  # Make model
+  model <- lm(
+    bill_depth_mm ~ bill_length_mm,
+    data = penguins_data)
+  # Get species name
+  species_name <- unique(penguins_data$species)
+  # If this is the combined dataset with multiple
+  # species, changed name to 'combined'
+  if (length(species_name) > 1) {
+    species_name <- "combined"
+  }
+  # Get model summary and add species name
+  glance(model) |>
+    mutate(species = species_name, .before = 1)
 }
 
-glance_penguins <- function(mod_in_list) {
-  model_name <- names(mod_in_list)
-  broom::glance(mod_in_list[[1]]) %>%
-    mutate(model = model_name)
+model_augment <- function(penguins_data) {
+  # Make model
+  model <- lm(
+    bill_depth_mm ~ bill_length_mm,
+    data = penguins_data)
+  # Get species name
+  species_name <- unique(penguins_data$species)
+  # If this is the combined dataset with multiple
+  # species, changed name to 'combined'
+  if (length(species_name) > 1) {
+    species_name <- "combined"
+  }
+  # Get model summary and add species name
+  augment(model) |>
+    mutate(species = species_name, .before = 1)
 }
