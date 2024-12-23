@@ -21,9 +21,9 @@ targets::tar_load(
 library(tidyverse)
 ```
 
-This is an example analysis of penguins on the Palmer Archipelago in Antarctica.
+The goal of this analysis is to determine how bill length and depth are related in three species of penguins from Antarctica.
 
-## Models
+## Methods
 
 We analyzed the relationship between bill length and depth using linear models. One model did not take into account species, while the others did.
 
@@ -40,7 +40,9 @@ species_mean_r2 <- species_summary |>
   round(2)
 ```
 
-The model that did not account for species shows a negative relationship between bill length and depth overall (@fig-combined-plot).
+The model that did not account for species ("combined model") shows a negative relationship between bill length and depth overall (@fig-combined-plot).
+
+The models that did account for species show the opposite result: a positive relationship between bill length and depth for each species (@fig-species-plot; @fig-interaction-plot).
 
 The models that did account for species shows the opposite result: a positive relationship between bill length and depth for each species (@fig-separate-plot).
 

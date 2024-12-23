@@ -43,3 +43,4 @@ model_augment <- function(penguins_data) {
   augment(model) |>
     mutate(species = species_name, .before = 1)
 }
+
