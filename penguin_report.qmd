@@ -30,6 +30,7 @@ We analyzed the relationship between bill length and depth using linear models. 
 ## Results
 
 ```{r}
+#| label: results-stats
 combined_r2 <- combined_summary |>
   pull(r.squared) |>
   round(2)
