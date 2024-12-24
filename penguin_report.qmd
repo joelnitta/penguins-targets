@@ -42,9 +42,7 @@ species_mean_r2 <- species_summary |>
 
 The model that did not account for species ("combined model") shows a negative relationship between bill length and depth overall (@fig-combined-plot).
 
-The models that did account for species show the opposite result: a positive relationship between bill length and depth for each species (@fig-species-plot; @fig-interaction-plot).
-
-The models that did account for species shows the opposite result: a positive relationship between bill length and depth for each species (@fig-separate-plot).
+The models that accounted for species showed the opposite result: a positive relationship between bill length and depth for each species (@fig-separate-plot).
 
 Furthermore, the combined model explained less of the variation in the data (*R* squared = `r combined_r2`) than the models for each species (mean *R* squared = `r species_mean_r2`).
 
